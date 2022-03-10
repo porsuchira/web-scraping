@@ -5,21 +5,12 @@ import pandas as pd
 from IPython.display import display
 url = 'https://www.tradingview.com/markets/cryptocurrencies/prices-all/'
 res = requests.get(url)
-#print(res.text[:200])
 soup = BeautifulSoup(res.text, 'html.parser')
-coin = soup.find_all('a', {'class':'tv-screener__symbol'})
-coinLs = []
-#price = soup.find_all('td', {'class':'tv-data-table__cell tv-screener-table__cell tv-screener-table__cell--big'})
-for c in coin:
-    coinLs.append(c.text)
-
-#print(len(price))
-#for p in range(2, len(price), 6):
-#    print(price[p])
-df=pd.DataFrame({'coin':coinLs})
-display(df)
-
-
+tr_tag = soup.find_all('tr', {'class':'tv-data-table__row tv-data-table__stroke tv-screener-table__result-row'})
+for obj_tr in tr_tag:
+    coin = str(obj_tr.td.div.div.a.text)    
+    price = obj_tr.find_all('td', {'class':'tv-data-table__cell tv-screener-table__cell tv-screener-table__cell--big'})[2].text
+    print(coin,price)
 
 
 
